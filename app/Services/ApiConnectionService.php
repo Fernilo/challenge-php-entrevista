@@ -10,20 +10,23 @@ class ApiConnectionService
 
     public function __construct()
     {
-        $this->apiUrl = 'https://www.kiteprop.com/api/v1/';
+        $this->apiUrl = env('API_URL');
+        $this->apiToken = $this->getApiToken();
     }
 
-    public function login()
+    protected function getApiToken()
     {
         $response = Http::post($this->apiUrl . 'auth/login', [
             'email' => env('API_USERNAME'),
             'password' => env('API_PASSWORD'),
         ]);
-      dd($response->body());
+
+        return $response->json('data')['access_token'];
     }
 
-    public function getProperties()
+    public function getAllProperties()
     {
-        $response = Http::get($this->apiUrl.'/properties');
+        $response = Http::withToken($this->apiToken)->get($this->apiUrl.'properties');
+        return $response->json();
     }
 }

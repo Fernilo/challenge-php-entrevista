@@ -16,8 +16,15 @@ class PropiedadesController extends Controller
 
     public function index()
     {
-        $properties = $this->apiConnectionService->login();
-        dd($properties);
-        return view('admin.propiedades.index');
+        $properties = $this->apiConnectionService->getAllProperties();
+     
+        return view('admin.propiedades.index', [
+            'properties' => $properties['data']
+        ]);
+    }
+
+    public function show(int $id)
+    {
+
     }
 }

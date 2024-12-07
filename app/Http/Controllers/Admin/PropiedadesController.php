@@ -18,34 +18,21 @@ class PropiedadesController extends Controller
 
     public function index(Request $request)
     {
-       
-        $currentPage = $request->input('page', 1); 
+        $currentPage = $request->input('page', 1);
         $response = $this->apiConnectionService->getAllProperties();
     
-       
         $properties = $response['data'];
     
-       
-        if (empty($properties)) {
-            return view('admin.propiedades.index', [
-                'properties' => [],
-                'pagination' => $response['pagination'], 
+        if ($request->ajax()) {
+            return response()->json([
+                'properties' => $properties,
+                'pagination' => $response['pagination'],
             ]);
         }
     
-        $perPage = $response['pagination']['per_page']; 
-        $total = $response['pagination']['total'];
-        $propertiesPaginated = new LengthAwarePaginator(
-            collect($properties)->slice(($currentPage - 1) * $perPage, $perPage)->all(),
-            $total,
-            $perPage,
-            $currentPage,
-            ['path' => LengthAwarePaginator::resolveCurrentPath()]
-        );
-    
         return view('admin.propiedades.index', [
-            'properties' => $propertiesPaginated,
-            'pagination' => $response['pagination'], 
+            'properties' => $properties,
+            'pagination' => $response['pagination'],
         ]);
     }
 

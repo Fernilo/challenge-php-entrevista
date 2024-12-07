@@ -3,6 +3,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\ApiConnectionService;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 
 class PropiedadesController extends Controller
 {
@@ -14,12 +16,36 @@ class PropiedadesController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $properties = $this->apiConnectionService->getAllProperties();
-     
+       
+        $currentPage = $request->input('page', 1); 
+        $response = $this->apiConnectionService->getAllProperties();
+    
+       
+        $properties = $response['data'];
+    
+       
+        if (empty($properties)) {
+            return view('admin.propiedades.index', [
+                'properties' => [],
+                'pagination' => $response['pagination'], 
+            ]);
+        }
+    
+        $perPage = $response['pagination']['per_page']; 
+        $total = $response['pagination']['total'];
+        $propertiesPaginated = new LengthAwarePaginator(
+            collect($properties)->slice(($currentPage - 1) * $perPage, $perPage)->all(),
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+    
         return view('admin.propiedades.index', [
-            'properties' => $properties['data']
+            'properties' => $propertiesPaginated,
+            'pagination' => $response['pagination'], 
         ]);
     }
 

@@ -1,7 +1,10 @@
 <?php 
 
 namespace App\Services;
+
+use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ApiConnectionService
 {
@@ -26,7 +29,18 @@ class ApiConnectionService
 
     public function getAllProperties()
     {
-        $response = Http::withToken($this->apiToken)->get($this->apiUrl.'properties');
-        return $response->json();
+        try {
+            $response = Http::withToken($this->apiToken)->get($this->apiUrl . 'properties');
+
+            if (!$response->successful()) {
+                throw new Exception('Error al conectar con la API:' . $response->status() . ' - ' . $response->body());
+            }
+
+            return collect($response->json());
+        } catch (\Throwable $th) {
+            Log::error('Error en ApiConnectionService: ' . $th->getMessage());
+
+            throw new Exception('No se pudo obtener las propiedades. Intente nuevamente más tarde.');
+        }
     }
 }

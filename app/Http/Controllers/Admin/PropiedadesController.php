@@ -51,6 +51,8 @@ class PropiedadesController extends Controller
 
     public function show(int $id)
     {
-
+        $property = $this->apiConnectionService->getOne($id);
+      
+        return view('admin.propiedades.show', ['property' => $property['data']]);
     }
 }

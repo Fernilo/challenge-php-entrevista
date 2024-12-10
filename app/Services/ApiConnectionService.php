@@ -5,6 +5,7 @@ namespace App\Services;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class ApiConnectionService
 {
@@ -27,7 +28,7 @@ class ApiConnectionService
         return $response->json('data')['access_token'];
     }
 
-    public function getAllProperties()
+    protected function getAllProperties()
     {
         try {
             $response = Http::withToken($this->apiToken)->get($this->apiUrl . 'properties');
@@ -59,5 +60,17 @@ class ApiConnectionService
 
             throw new Exception('No se pudo obtener la propiedad. Intente nuevamente más tarde.');
         }
+    }
+
+    public function getAllPropertiesWithCache()
+    {
+        if(Cache::has('responseApiAll')) {
+            $responseApiAll = Cache::get('responseApiAll');
+        } else {
+            $responseApiAll = $this->getAllProperties();
+            Cache::put('responseApiAll', $responseApiAll, 600);
+        }
+
+        return $responseApiAll;
     }
 }

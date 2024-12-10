@@ -6,6 +6,7 @@ use App\Services\ApiConnectionService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
+
 class PropiedadesController extends Controller
 {
     private $apiConnectionService;
@@ -18,14 +19,11 @@ class PropiedadesController extends Controller
 
     public function index(Request $request)
     {
-       
         $currentPage = $request->input('page', 1); 
-        $response = $this->apiConnectionService->getAllProperties();
-    
-       
+
+        $response = $this->apiConnectionService->getAllPropertiesWithCache();
         $properties = $response['data'];
-    
-       
+   
         if (empty($properties)) {
             return view('admin.propiedades.index', [
                 'properties' => [],

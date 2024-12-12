@@ -41,6 +41,33 @@
                 <li>Precio: {{$property['for_sale_price']}}</li>
                 <li>Contacto: {{$property['user']['phone_whatsapp']?? $property['user']['email']}}</li>
             </ul>
+
+            <div id="map"></div>
         </div>
     </div>
+
+    @vite(['resources/css/map-styles.css'])
+@endsection
+
+@section('scripts')
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_KEY') }}"></script>
+    <script>
+        function initMap() {
+            var propertyLocation = { lat: {{ $property['geo']['lat'] }}, lng: {{ $property['geo']['lon'] }} };
+    
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: propertyLocation
+            });
+    
+            var marker = new google.maps.Marker({
+                position: propertyLocation,
+                map: map,
+                title: 'Ubicación'
+            });
+        }
+    
+        google.maps.event.addDomListener(window, 'load', initMap);
+
+    </script>
 @endsection

@@ -53,4 +53,12 @@ class PropiedadesController extends Controller
      
         return view('admin.propiedades.show', ['property' => $property['data']]);
     }
+
+
+    public function sendMessage(Request $request)
+    {
+        $this->apiConnectionService->sendMessage($request->except('_token'));
+
+        return redirect()->route('propiedades.show' , $request->property_id)->with('success', 'Mensaje enviado con éxito');
+    }
 }

@@ -15,4 +15,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/propiedades', [PropiedadesController::class, 'index'])->name('propiedades.index');
     Route::get('propiedades/{id}', [PropiedadesController::class, 'show'])->name('propiedades.show');
+    Route::post('sendMessage', [PropiedadesController::class, 'sendMessage'])->name('propiedades.sendMessage');
 });

@@ -73,4 +73,10 @@ class ApiConnectionService
 
         return $responseApiAll;
     }
+
+    public function sendMessage($data)
+    {
+        $response = Http::withToken($this->apiToken)->post($this->apiUrl . 'messages/', $data);
+        dd($response->body());
+    }
 }

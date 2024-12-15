@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-9">
             <div id="carouselExampleIndicators" class="carousel slide mb-3" style="height: 600px; width: 100%; overflow: hidden;" data-bs-ride="true">
                 <div class="carousel-indicators">
                     @foreach ($property['images_list'] as $i => $image)
@@ -29,20 +29,22 @@
             <p>
                 {{$property['description']}}
             </p>
-            <ul>
-                <li>País: {{$property['country']}}</li>
-                <li>Provincia: {{$property['state']}}</li>
-                <li>Ciudad: {{$property['city']}}</li>
-                <li>Barrio: {{$property['neighborhood']}}</li>
-                <li>Link youtube: {{$property['link_youtube']}}</li>
-                <li>Link 360: {{$property['link_360']}}</li>
-                <li>Metros totales: {{$property['total_meters']}}</li>
-                <li>Metros cubiertos: {{$property['covered_meters']}}</li>
-                <li>Precio: {{$property['for_sale_price']}}</li>
-                <li>Contacto: {{$property['user']['phone_whatsapp']?? $property['user']['email']}}</li>
-            </ul>
-
             <div id="map"></div>
+        </div>
+        <div class="col-3">
+            <h5 class="fw-bold">Información adcional:</h5>
+            <ul class="list-group">
+                <li class="list-group-item fw-semibold">País: {{$property['country']}}</li>
+                <li class="list-group-item fw-semibold fw-semibold">Provincia: {{$property['state']}}</li>
+                <li class="list-group-item fw-semibold">Ciudad: {{$property['city']}}</li>
+                <li class="list-group-item fw-semibold">Barrio: {{$property['neighborhood']}}</li>
+                <li class="list-group-item fw-semibold">Link youtube: {{$property['link_youtube']}}</li>
+                <li class="list-group-item fw-semibold">Link 360: {{$property['link_360']}}</li>
+                <li class="list-group-item fw-semibold">Metros totales: {{$property['total_meters']}}</li>
+                <li class="list-group-item fw-semibold">Metros cubiertos: {{$property['covered_meters']}}</li>
+                <li class="list-group-item fw-semibold">Precio: {{$property['for_sale_price']}}</li>
+                <li class="list-group-item fw-semibold">Contacto: {{$property['user']['phone_whatsapp']?? $property['user']['email']}}</li>
+            </ul>
         </div>
     </div>
 

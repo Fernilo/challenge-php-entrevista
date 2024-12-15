@@ -28,14 +28,19 @@ class ApiConnectionService
         return $response->json('data')['access_token'];
     }
 
+    protected function handleApiResponse($response)
+    {
+        if (!$response->successful()) {
+            throw new Exception('Error al conectar con la API: ' . $response->status() . ' - ' . $response->body());
+        }
+    }
+
     protected function getAllProperties()
     {
         try {
             $response = Http::withToken($this->apiToken)->get($this->apiUrl . 'properties');
 
-            if (!$response->successful()) {
-                throw new Exception('Error al conectar con la API:' . $response->status() . ' - ' . $response->body());
-            }
+            $this->handleApiResponse($response);
 
             return collect($response->json());
         } catch (\Throwable $th) {
@@ -50,9 +55,7 @@ class ApiConnectionService
         try {
             $response = Http::withToken($this->apiToken)->get($this->apiUrl . 'properties/'.$idProperty);
 
-            if (!$response->successful()) {
-                throw new Exception('Error al conectar con la API:' . $response->status() . ' - ' . $response->body());
-            }
+            $this->handleApiResponse($response);
 
             return collect($response->json());
         } catch (\Throwable $th) {
@@ -76,7 +79,16 @@ class ApiConnectionService
 
     public function sendMessage($data)
     {
-        $response = Http::withToken($this->apiToken)->post($this->apiUrl . 'messages/', $data);
-        dd($response->body());
+        try {
+            $response = Http::withToken($this->apiToken)->post($this->apiUrl . 'messages/', $data);
+           
+            $this->handleApiResponse($response);
+
+        } catch (\Throwable $th) {
+            Log::error('Error en ApiConnectionService: ' . $th->getMessage());
+
+            throw new Exception('No se pudo enviar el mensaje. Intente nuevamente más tarde.');
+        }
+       
     }
 }

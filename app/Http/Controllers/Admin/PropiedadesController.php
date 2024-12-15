@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MessageRequest;
 use App\Services\ApiConnectionService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
@@ -55,10 +56,20 @@ class PropiedadesController extends Controller
     }
 
 
-    public function sendMessage(Request $request)
+    public function sendMessage(MessageRequest $request)
     {
-        $this->apiConnectionService->sendMessage($request->except('_token'));
+        $validated = $request->validated();
 
-        return redirect()->route('propiedades.show' , $request->property_id)->with('success', 'Mensaje enviado con éxito');
+        $validated['property_id'] = $request->input('property_id');
+
+        try {
+            $this->apiConnectionService->sendMessage($validated);
+            
+            return redirect()->route('propiedades.show', $validated['property_id'])
+                             ->with('success', 'Mensaje enviado con éxito!');
+        } catch (\Exception $e) {
+            return redirect()->route('propiedades.show', $validated['property_id'])
+                             ->with('error', 'Error al enviar el mensaje. Intente nuevamente ');
+        }
     }
 }
